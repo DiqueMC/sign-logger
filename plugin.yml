@@ -1,4 +1,5 @@
 name: SignLogger
 main: com.diquemc.sign.SignLogger
-version: 0.1
-softdepend: [DiqueMCChat]
+version: "1.0"
+api-version: "1.14"
+depend: [DiqueMCChat]

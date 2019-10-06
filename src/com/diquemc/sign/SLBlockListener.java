@@ -5,57 +5,49 @@ import com.diquemc.chat.DiqueMCChat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
+import java.util.StringJoiner;
 
 public class SLBlockListener implements Listener {
-    ChatChannel logChannel;
-    DiqueMCChat chatPlugin;
+    private ChatChannel logChannel;
+    private DiqueMCChat chatPlugin;
 
-    public SLBlockListener() {
+    SLBlockListener() {
         logChannel = new ChatChannel("SignLogger", false, false, null, "&7[SignLog {servername}]");
-        chatPlugin = (DiqueMCChat) Bukkit.getPluginManager().getPlugin("DiqueMCChat");
+        chatPlugin = com.diquemc.chat.DiqueMCChat.getInstance();
 
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onSignChange(SignChangeEvent event) {
         if (event.getLines().length == 0) {
             return;
         }
-
-        if (SignLogger.has(event.getPlayer(), "signlogger.bypass")) {
+        Player player = event.getPlayer();
+        if (player == null || player.hasPermission("signlogger.bypass")) {
             return;
         }
 
         Block block = event.getBlock();
 
-        String header = event.getPlayer().getName();
+        String header = player.getName();
         String world = " " + block.getWorld().getName();
         String coords = "[" + block.getX() + " " + block.getY() + " " + block.getZ() + world + "]";
 
-        String content = "";
-
+        StringJoiner lines = new StringJoiner(ChatColor.GRAY + " | ");
         for (String line : event.getLines()) {
             if (line.trim().length() != 0) {
-
-                if(content.length() == 0){
-                    content = line;
-                }else {
-                    content = content + ChatColor.GRAY + " | " + line;
-                }
-
-
+                lines.add(line);
             }
         }
-        if (content.length() == 0) {
+        if (lines.length() == 0) {
             return;
         }
-
-        content = ChatColor.GRAY + " [ " + content + ChatColor.GRAY  + " ] ";
+        String content = ChatColor.GRAY + " [ " + lines.toString() + ChatColor.GRAY  + " ] ";
         chatPlugin.chatHandler.playerChat(Bukkit.getConsoleSender(),logChannel,header + content + coords);
     }
 }
