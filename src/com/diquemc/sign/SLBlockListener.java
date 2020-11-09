@@ -3,7 +3,7 @@ package com.diquemc.sign;
 import com.diquemc.chat.ChatChannel;
 import com.diquemc.chat.DiqueMCChat;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
